@@ -2,13 +2,14 @@ package edu.grinnell.csc207.util;
 
 import java.io.PrintWriter;
 import java.util.Iterator;
+import java.util.Stack;
 
 /**
  * Simple binary trees.
  *
  * @author Samuel A. Rebelsky
- * @author Your Name Here
- * @author Your Name Here
+ * @author Sarah Deschamps
+ * @author Jana Vadillo
  *
  * @param <T>
  *   The type of value stored in the tree.
@@ -72,18 +73,36 @@ public class BinaryTree<T> implements Iterable<T> {
    * @return the iterator.
    */
   public Iterator<T> iterator() {
+
     return new Iterator<T>() {
+      Stack<Object> remaining = new Stack<Object>();
+      this.remaining.push(this.root);
+
 
       public boolean hasNext() {
+        return(!(remaining.isEmpty()));
         // STUB
         return false;
       } // hasNext()
 
       public T next() {
-        // STUB
-        return null;
+        Object next = remaining.pop();
+    if (next instanceof BinaryTreeNode<?>) {
+      @SuppressWarnings("unchecked")
+      BinaryTreeNode<T> node = (BinaryTreeNode<T>) next;
+      if (node.left != null) {
+        remaining.push(node.left);
+      } // if (node.left != null)
+      if (node.right != null) {
+        remaining.push(node.right);
+      } // if (node.right != null)
+      return(node.value);
       } // next()
+    }
     }; // new Iterator()
+
+
+
   } // iterator()
 
   // +---------+-----------------------------------------------------
@@ -136,5 +155,65 @@ public class BinaryTree<T> implements Iterable<T> {
           makeTree(values, mid + 1, ub));
     } // if/else
   } // makeTree(T[], int, int)
+
+  public void recursivePrint1(PrintWriter pen, BinaryTreeNode node){
+    if (node == null){
+      return;
+    }
+    pen.printf("%s ", node.value);
+    recursivePrint1(pen, node.left);
+    recursivePrint1(pen, node.right);
+    return;
+  }
+  public void elements01(PrintWriter pen){
+    recursivePrint1(pen, this.root);
+  }
+
+  
+  public void recursivePrint2(PrintWriter pen, BinaryTreeNode node){
+    if (node == null){
+      return;
+    }
+    recursivePrint2(pen, node.left);
+    pen.printf("%s ", node.value);
+    recursivePrint2(pen, node.right);
+    return;
+  }
+
+  public void elements02(PrintWriter pen){
+    recursivePrint2(pen, this.root);
+  }
+
+  /**
+ * Print all of the elements in some order or other.
+ * 
+ * Note: We are trying to avoid recursion.
+ */
+public void print(PrintWriter pen) {
+  // A collection of the remaining things to print
+  Stack<Object> remaining = new Stack<Object>();
+  remaining.push(this.root);
+  // Invariants: 
+  //   remaining only contains Strings or Nodes
+  //   All values in the tree are either
+  //     (a) already printed,
+  //     (b) in remaining, or
+  //     (c) in or below a node in remaining
+  while (!remaining.isEmpty()) {
+    Object next = remaining.pop();
+    if (next instanceof BinaryTreeNode<?>) {
+      @SuppressWarnings("unchecked")
+      BinaryTreeNode<T> node = (BinaryTreeNode<T>) next;
+      remaining.push(node.value);
+      if (node.right != null) {
+        remaining.push(node.right);
+      } // if (node.right != null)
+    } else {
+      pen.print(next);
+      pen.print(" ");
+    } // if/else
+  } // while
+  pen.println();
+} // print(PrintWriter)
 
 } // class BinaryTree

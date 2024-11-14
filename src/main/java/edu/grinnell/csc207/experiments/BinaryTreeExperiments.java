@@ -24,8 +24,12 @@ public class BinaryTreeExperiments {
     String[] strings = {"aardvark", "billygoat", "chinchilla", "dingo", "emu",
         "frog", "gnu", "hippo", "iguana", "jackalope", "koala", "llama"};
     BinaryTree<String> tree = new BinaryTree<String>(strings);
-
+    tree.elements01(pen);
+    pen.println("\n");
+    tree.elements02(pen);
     tree.dump(pen);
+    pen.println("\n");
+    tree.print(pen);
     pen.close();
   } // main
 } // class BinaryTreeExperiments
